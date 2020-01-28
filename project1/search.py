@@ -57,35 +57,15 @@ class SearchProblem:
         util.raiseNotDefined()
 
 class Node:
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    e = Directions.EAST
-    n = Directions.NORTH
-    stop = Directions.STOP
-
     def __init__(self, state, parent=None, path=()):
         self.state = state
         self.parent = parent
         self.path = path
 
-    def take_action(self, action):
+    def next_Node(self, action, next_state):
         next_path = list(self.path)
         next_path.append(action)
-        next_path=tuple(next_path)
-        next_state = (None, None)
-        if action == Node.s:
-            next_state = (self.state[0], self.state[1] - 1)
-        elif action == Node.n:
-            next_state = (self.state[0], self.state[1] + 1)
-        elif action == Node.w:
-            next_state = (self.state[0] - 1, self.state[1])
-        elif action == Node.e:
-            next_state = (self.state[0] + 1, self.state[1])
-        elif action == Node.stop:
-            pass
-        else:
-            print("Undefined action")
+        next_path = tuple(next_path)
         next_Node = Node(next_state, self.state, next_path)
         return next_Node
         
@@ -117,11 +97,6 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    actions = {'North': Directions.NORTH,
-               'South': Directions.SOUTH,
-               'West': Directions.WEST,
-               'East': Directions.EAST}
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
@@ -151,20 +126,15 @@ def depthFirstSearch(problem):
         successors = problem.getSuccessors(current_Node.state)
         for successor in successors:
             s_state = successor[0]
-            s_action_str = successor[1]
+            s_action = successor[1]
             if s_state == current_Node.parent or s_state in visited:
                 continue
-            s_action = actions[s_action_str]
-            new_Node = current_Node.take_action(s_action)
+            new_Node = current_Node.next_Node(s_action, s_state)
             fringe.push(new_Node)
 
     print('fail')
     return[]
 
-
-
-
-    return []
 
 def breadthFirstSearch(problem):
     """
