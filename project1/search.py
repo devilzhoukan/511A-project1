@@ -60,6 +60,8 @@ class Node:
     def __init__(self, state, parent=None, path=()):
         self.state = state
         self.parent = parent
+        if self.parent is None:
+            self.parent = state
         self.path = path
 
     def next_Node(self, action, next_state):
@@ -108,12 +110,11 @@ def depthFirstSearch(problem):
 
     while not fringe.isEmpty():
         current_Node = fringe.pop()
-        print('current: ', current_Node.state)
 
         # Check if we make it
         if problem.isGoalState(current_Node.state):
             print("Success!")
-            print(current_Node.path)
+            # print(current_Node.path)
             return current_Node.path
 
         # Check if visited
@@ -142,7 +143,39 @@ def breadthFirstSearch(problem):
     [2nd Edition: p 73, 3rd Edition: p 82]
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Queue()
+    start_Node = Node(problem.getStartState())
+    # avoid cycle in BFS
+    visited = set()
+    fringe.push(start_Node)
+
+    while not fringe.isEmpty():
+        current_Node = fringe.pop()
+
+        # Check if we make it
+        if problem.isGoalState(current_Node.state):
+            print("Success!")
+            print(current_Node.path)
+            return current_Node.path
+
+        # Check if visited
+        if current_Node.state in visited:
+            continue
+
+        # Mark as visited
+        visited.add(current_Node.state)
+
+        successors = problem.getSuccessors(current_Node.state)
+        for successor in successors:
+            s_state = successor[0]
+            s_action = successor[1]
+            if s_state == current_Node.parent or s_state in visited:
+                continue
+            new_Node = current_Node.next_Node(s_action, s_state)
+            fringe.push(new_Node)
+
+    print('fail')
+    return []
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
