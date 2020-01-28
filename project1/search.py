@@ -49,13 +49,46 @@ class SearchProblem:
 
     def getCostOfActions(self, actions):
         """
-         actions: A list of actions to take
+        actions: A list of actions to take
 
         This method returns the total cost of a particular sequence of actions.  The sequence must
         be composed of legal moves
         """
         util.raiseNotDefined()
 
+class Node:
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    e = Directions.EAST
+    n = Directions.NORTH
+    stop = Directions.STOP
+
+    def __init__(self, state, parent=None, path=()):
+        self.state = state
+        self.parent = parent
+        self.path = path
+
+    def take_action(self, action):
+        next_path = list(self.path)
+        next_path.append(action)
+        next_path=tuple(next_path)
+        next_state = (None, None)
+        if action == Node.s:
+            next_state = (self.state[0], self.state[1] - 1)
+        elif action == Node.n:
+            next_state = (self.state[0], self.state[1] + 1)
+        elif action == Node.w:
+            next_state = (self.state[0] - 1, self.state[1])
+        elif action == Node.e:
+            next_state = (self.state[0] + 1, self.state[1])
+        elif action == Node.stop:
+            pass
+        else:
+            print("Undefined action")
+        next_Node = Node(next_state, self.state, next_path)
+        return next_Node
+        
 
 def tinyMazeSearch(problem):
     """
@@ -84,7 +117,54 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from game import Directions
+    actions = {'North': Directions.NORTH,
+               'South': Directions.SOUTH,
+               'West': Directions.WEST,
+               'East': Directions.EAST}
+    print "Start:", problem.getStartState()
+    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    fringe = util.Stack()
+    start_Node = Node(problem.getStartState())
+    # avoid cycle in DFS
+    visited = set()
+    fringe.push(start_Node)
+
+    while not fringe.isEmpty():
+        current_Node = fringe.pop()
+        print('current: ', current_Node.state)
+
+        # Check if we make it
+        if problem.isGoalState(current_Node.state):
+            print("Success!")
+            print(current_Node.path)
+            return current_Node.path
+
+        # Check if visited
+        if current_Node.state in visited:
+            continue
+
+        # Mark as visited
+        visited.add(current_Node.state)
+
+        successors = problem.getSuccessors(current_Node.state)
+        for successor in successors:
+            s_state = successor[0]
+            s_action_str = successor[1]
+            if s_state == current_Node.parent or s_state in visited:
+                continue
+            s_action = actions[s_action_str]
+            new_Node = current_Node.take_action(s_action)
+            fringe.push(new_Node)
+
+    print('fail')
+    return[]
+
+
+
+
+    return []
 
 def breadthFirstSearch(problem):
     """
