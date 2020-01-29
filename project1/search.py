@@ -117,7 +117,7 @@ def depthFirstSearch(problem):
         if problem.isGoalState(current_Node.state):
             print("Success!")
             # print(current_Node.path)
-            return current_Node.path
+            return list(current_Node.path)
 
         # Check if visited
         if current_Node.state in visited:
@@ -158,7 +158,7 @@ def breadthFirstSearch(problem):
         if problem.isGoalState(current_Node.state):
             print("Success!")
             print(current_Node.path)
-            return current_Node.path
+            return list(current_Node.path)
 
         # Check if visited
         if current_Node.state in visited:
@@ -198,7 +198,7 @@ def uniformCostSearch(problem):
         if problem.isGoalState(current_Node.state):
             print("Success!")
             print(current_Node.path)
-            return current_Node.path
+            return list(current_Node.path)
 
         # Mark as visited
         visited.add(current_Node.state)
@@ -244,7 +244,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if problem.isGoalState(current_Node.state):
             print("Success!")
             print(current_Node.path)
-            return current_Node.path
+            return list(current_Node.path)
 
         # Mark as visited
         visited.add(current_Node.state)
