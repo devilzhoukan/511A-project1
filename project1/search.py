@@ -57,18 +57,20 @@ class SearchProblem:
         util.raiseNotDefined()
 
 class Node:
-    def __init__(self, state, parent=None, path=()):
+    def __init__(self, state, parent=None, path=(), cost=0):
         self.state = state
         self.parent = parent
         if self.parent is None:
             self.parent = state
         self.path = path
+        self.cost = cost
 
-    def next_Node(self, action, next_state):
+    def next_Node(self, action, next_state, cost):
         next_path = list(self.path)
         next_path.append(action)
         next_path = tuple(next_path)
-        next_Node = Node(next_state, self.state, next_path)
+        next_cost = cost
+        next_Node = Node(next_state, self.state, next_path, next_cost)
         return next_Node
         
 
@@ -128,14 +130,14 @@ def depthFirstSearch(problem):
         for successor in successors:
             s_state = successor[0]
             s_action = successor[1]
+            s_cost = successor[2] + current_Node.cost
             if s_state == current_Node.parent or s_state in visited:
                 continue
-            new_Node = current_Node.next_Node(s_action, s_state)
+            new_Node = current_Node.next_Node(s_action, s_state, s_cost)
             fringe.push(new_Node)
 
     print('fail')
     return[]
-
 
 def breadthFirstSearch(problem):
     """
@@ -169,9 +171,10 @@ def breadthFirstSearch(problem):
         for successor in successors:
             s_state = successor[0]
             s_action = successor[1]
+            s_cost = successor[2] + current_Node.cost
             if s_state == current_Node.parent or s_state in visited:
                 continue
-            new_Node = current_Node.next_Node(s_action, s_state)
+            new_Node = current_Node.next_Node(s_action, s_state, s_cost)
             fringe.push(new_Node)
 
     print('fail')
@@ -180,7 +183,38 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    print("uniformCostSearch called")
+    fringe = util.PriorityQueue()
+    start_Node = Node(problem.getStartState())
+
+    # avoid cycle in UCS
+    visited = set()
+    fringe.push(start_Node, 0)
+
+    while not fringe.isEmpty():
+        current_Node = fringe.pop()
+
+        # Check if we make it
+        if problem.isGoalState(current_Node.state):
+            print("Success!")
+            print(current_Node.path)
+            return current_Node.path
+
+        # Mark as visited
+        visited.add(current_Node.state)
+
+        successors = problem.getSuccessors(current_Node.state)
+        for successor in successors:
+            s_state = successor[0]
+            s_action = successor[1]
+            s_cost = successor[2] + current_Node.cost
+            if s_state == current_Node.parent or s_state in visited:
+                continue
+            new_Node = current_Node.next_Node(s_action, s_state, s_cost)
+            fringe.push(new_Node, new_Node.cost)
+
+    print('fail')
+    return []
 
 def nullHeuristic(state, problem=None):
     """
@@ -192,7 +226,42 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    "Search the node of least total cost first. "
+    "*** YOUR CODE HERE ***"
+    print("uniformCostSearch called")
+    fringe = util.PriorityQueue()
+    start_heuristic = heuristic(problem.getStartState(), problem)
+    start_Node = Node(state=problem.getStartState(), cost=start_heuristic)
+
+    # avoid cycle in A star
+    visited = set()
+    fringe.push(start_Node, 0)
+
+    while not fringe.isEmpty():
+        current_Node = fringe.pop()
+
+        # Check if we make it
+        if problem.isGoalState(current_Node.state):
+            print("Success!")
+            print(current_Node.path)
+            return current_Node.path
+
+        # Mark as visited
+        visited.add(current_Node.state)
+
+        successors = problem.getSuccessors(current_Node.state)
+        for successor in successors:
+            s_state = successor[0]
+            s_action = successor[1]
+            s_cost = successor[2]
+            s_heuristic = heuristic(s_state, problem)
+            if s_state == current_Node.parent or s_state in visited:
+                continue
+            new_Node = current_Node.next_Node(s_action, s_state, s_heuristic)
+            fringe.push(new_Node, new_Node.cost)
+
+    print('fail')
+    return []
 
 
 # Abbreviations
