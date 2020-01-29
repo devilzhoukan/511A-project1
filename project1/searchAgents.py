@@ -439,11 +439,13 @@ class FoodSearchProblem:
             cost += 1
         return cost
 
+
 class AStarFoodSearchAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
+
 
 def foodHeuristic(state, problem):
     """
@@ -472,7 +474,23 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    heuristic = 0
+    food_list = foodGrid.asList()
+    if len(food_list) == 0:
+        return 0
+
+    if position in food_list:
+        return 0
+
+    while len(food_list) != 0:
+        food_distances = [(util.manhattanDistance(position, food), food) for food in food_list]
+        min_distance, min_food = min(food_distances)
+        heuristic += min_distance
+        food_list.remove(min_food)
+        position = min_food
+    # mazeDistance(point1, point2, gameState)
+
+    return heuristic
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

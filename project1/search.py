@@ -101,9 +101,9 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    # print "Start:", problem.getStartState()
+    # print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    # print "Start's successors:", problem.getSuccessors(problem.getStartState())
     fringe = util.Stack()
     start_Node = Node(problem.getStartState())
     # avoid cycle in DFS
@@ -115,7 +115,7 @@ def depthFirstSearch(problem):
 
         # Check if we make it
         if problem.isGoalState(current_Node.state):
-            print("Success!")
+            # print("Success!")
             # print(current_Node.path)
             return list(current_Node.path)
 
@@ -157,7 +157,7 @@ def breadthFirstSearch(problem):
         # Check if we make it
         if problem.isGoalState(current_Node.state):
             print("Success!")
-            print(current_Node.path)
+            # print(current_Node.path)
             return list(current_Node.path)
 
         # Check if visited
@@ -197,7 +197,7 @@ def uniformCostSearch(problem):
         # Check if we make it
         if problem.isGoalState(current_Node.state):
             print("Success!")
-            print(current_Node.path)
+            # print(current_Node.path)
             return list(current_Node.path)
 
         # Mark as visited
@@ -243,7 +243,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         # Check if we make it
         if problem.isGoalState(current_Node.state):
             print("Success!")
-            print(list(current_Node.path))
+            # print(list(current_Node.path))
             return list(current_Node.path)
 
         # Mark as visited
