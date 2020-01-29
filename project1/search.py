@@ -243,7 +243,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         # Check if we make it
         if problem.isGoalState(current_Node.state):
             print("Success!")
-            print(current_Node.path)
+            print(list(current_Node.path))
             return list(current_Node.path)
 
         # Mark as visited
@@ -257,8 +257,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             s_heuristic = heuristic(s_state, problem)
             if s_state == current_Node.parent or s_state in visited:
                 continue
-            new_Node = current_Node.next_Node(s_action, s_state, s_heuristic)
-            fringe.push(new_Node, new_Node.cost)
+            new_Node = current_Node.next_Node(s_action, s_state, s_cost+current_Node.cost)
+            fringe.push(new_Node, new_Node.cost + s_heuristic)
 
     print('fail')
     return []
