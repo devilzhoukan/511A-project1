@@ -533,7 +533,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.breadthFirstSearch(problem)
 
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -570,7 +570,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x, y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return state in self.food.asList()
 
 
 ##################
@@ -583,6 +583,8 @@ class ApproximateSearchAgent(Agent):
     def registerInitialState(self, state):
         "This method is called before any moves are made."
         "*** YOUR CODE HERE ***"
+        self.actions = []
+        currentState = state
 
     def getAction(self, state):
         """
