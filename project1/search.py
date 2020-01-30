@@ -156,7 +156,7 @@ def breadthFirstSearch(problem):
 
         # Check if we make it
         if problem.isGoalState(current_Node.state):
-            print("Success!")
+            # print("Success!")
             # print(current_Node.path)
             return list(current_Node.path)
 
