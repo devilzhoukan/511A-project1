@@ -619,9 +619,9 @@ class ApproximateSearchAgent(Agent):
             for x in range(cur_x - r, cur_x + r):
                 for y in range(cur_y - r, cur_y + r):
                     if 0 <= x <= self.width and 0 <= y <= self.height and food[x][y]:
-                        score = mazeDistance(state.getPacmanPosition(), (x, y), state), \
+                        dest = mazeDistance(state.getPacmanPosition(), (x, y), state), \
                                 (x, y)
-                        destinations.append(score)
+                        destinations.append(dest)
 
             if destinations:
                 self.neighbor_used += 1
@@ -631,9 +631,9 @@ class ApproximateSearchAgent(Agent):
                 for x, row in enumerate(food):
                     for y, cell in enumerate(row):
                         if food[x][y]:
-                            score = mazeDistance(state.getPacmanPosition(), (x, y), state), \
+                            dest = mazeDistance(state.getPacmanPosition(), (x, y), state), \
                                     (x, y)
-                            destinations.append(score)
+                            destinations.append(dest)
 
             if destinations:
                 dst = min(destinations)[1]
