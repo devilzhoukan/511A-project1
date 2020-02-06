@@ -578,13 +578,31 @@ class AnyFoodSearchProblem(PositionSearchProblem):
 ##################
 
 class ApproximateSearchAgent(Agent):
-    "Implement your contest entry here.  Change anything but the class name."
+    "Implement your contest entry here. Change anything but the class name."
+
+    def __init__(self):
+        self.actions = []
+        self.corners = []
+        self.height = 0
+        self.width = 0
+        self.sum = 0
+        self.radius = 0
+        self.outer_used = 0
+        self.neighbor_used = 0
+        self.start = 0
+        self.end = 0
 
     def registerInitialState(self, state):
         "This method is called before any moves are made."
         "*** YOUR CODE HERE ***"
-        self.actions = []
-        currentState = state
+        self.start = time.time()
+        walls = state.getWalls()
+        h, w = walls.height - 2, walls.width - 2
+        self.height, self.width = h, w
+        food = state.getFood()
+        food_count = food.count()
+        self.radius = int(((h * w / food_count) ** 0.5 + 1) // 2)
+        # print('r: ', self.radius)
 
     def getAction(self, state):
         """
@@ -593,7 +611,44 @@ class ApproximateSearchAgent(Agent):
         Directions.{North, South, East, West, Stop}
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if not self.actions:
+            cur_x, cur_y = state.getPacmanPosition()
+            destinations = []
+            food = state.getFood()
+            r = self.radius + 1
+            for x in range(cur_x - r, cur_x + r):
+                for y in range(cur_y - r, cur_y + r):
+                    if 0 <= x <= self.width and 0 <= y <= self.height and food[x][y]:
+                        score = mazeDistance(state.getPacmanPosition(), (x, y), state), \
+                                (x, y)
+                        destinations.append(score)
+
+            if destinations:
+                self.neighbor_used += 1
+
+            if not destinations:
+                self.outer_used += 1
+                for x, row in enumerate(food):
+                    for y, cell in enumerate(row):
+                        if food[x][y]:
+                            score = mazeDistance(state.getPacmanPosition(), (x, y), state), \
+                                    (x, y)
+                            destinations.append(score)
+
+            if destinations:
+                dst = min(destinations)[1]
+                prob = PositionSearchProblem(state, start=state.getPacmanPosition(), goal=dst, warn=False)
+                self.actions.extend(search.bfs(prob))
+        a = self.actions.pop(0)
+        self.sum += 1
+        return a
+
+    def __del__(self):
+        self.end = time.time()
+        print('sum: ', self.sum)
+        print('neighbor: ', self.neighbor_used)
+        print('outer: ', self.outer_used)
+        print('duration: ', self.end - self.start)
 
 
 def mazeDistance(point1, point2, gameState):
