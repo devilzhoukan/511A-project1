@@ -358,10 +358,48 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    foodScore, pelletScore, ghostScore = 100.0, 160.0, -500.0
+    discount = 0.2
+    score = 0.0
+    killScore = 1000
+    safeTime = 10.0
+
+    foodList = currentGameState.getFood().asList()
+    pos = currentGameState.getPacmanPosition()
+
+    for food in foodList:
+        score += foodScore * (math.exp(-1.0 * discount * manhattanDistance(pos, food)) - 2)
+
+    # pellet
+    capsuleList = currentGameState.data.capsules
+    for capsule in capsuleList:
+        score += pelletScore * math.exp(-1.0 * discount * manhattanDistance(pos, capsule))
+
+    ghostPosList = []
+
+    curGhostStates = currentGameState.getGhostStates()  # game.AgentState
+    curScaredTimes = [ghostState.scaredTimer for ghostState in curGhostStates]  # list [int]
+    for state, lastTime in zip(curGhostStates, curScaredTimes):
+        ghostPosList.append(state.getPosition())
+
+    for lastTime, ghostPos in zip(curScaredTimes, ghostPosList):
+        if lastTime < safeTime:
+            score += ghostScore * math.exp(-1.0 * discount * manhattanDistance(pos, ghostPos))
+            score += (manhattanDistance(pos, ghostPos) < 2) * (-100000)
+
+    for lastTime, ghostPos in zip(curScaredTimes, ghostPosList):
+        # "kill here"
+        if lastTime > safeTime:
+            score += (manhattanDistance(pos, ghostPos) < 1) * killScore
+        if lastTime > safeTime * 2:
+            score += killScore * math.exp(-1.0 * discount * manhattanDistance(pos, ghostPos))
+
+    return score
+
 
 # Abbreviation
 better = betterEvaluationFunction
+
 
 class ContestAgent(MultiAgentSearchAgent):
     """
