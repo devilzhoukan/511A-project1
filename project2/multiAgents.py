@@ -304,7 +304,51 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if self.depth == 0 or gameState.isWin() or gameState.isLose():
+            return Directions.STOP
+        actions = gameState.getLegalPacmanActions()
+        ghostNum = gameState.getNumAgents() - 1
+        maxScore = float('-inf')
+        rAction = Directions.STOP
+        for action in actions:
+            successorGameState = gameState.generatePacmanSuccessor(action)
+            if successorGameState.isWin():
+                return action
+            score = self.actGhost(successorGameState, ghostNum, 1)
+            if score > maxScore:
+                maxScore = score
+                rAction = action
+        return rAction
+
+    def actGhost(self, gameState, ghostNum, depth):
+        # Act a ghost
+        # Expect value
+        if gameState.isWin() or gameState.isLose():
+            return self.evaluationFunction(gameState)
+        actions = gameState.getLegalActions(ghostNum)
+        if not actions:
+            return self.evaluationFunction(gameState)
+        successorGameStates = [gameState.generateSuccessor(ghostNum, action) for action in actions]
+        ghostNum -= 1
+        if ghostNum == 0:
+            if depth == self.depth:
+                scores = [self.evaluationFunction(state) for state in successorGameStates]
+            else:
+                scores = [self.actPacman(state, depth) for state in successorGameStates]
+        else:
+            scores = [self.actGhost(state, ghostNum, depth) for state in successorGameStates]
+        return sum(scores) / len(scores)
+
+    def actPacman(self, gameState, depth):
+        # Max value
+        if gameState.isWin() or gameState.isLose():
+            return self.evaluationFunction(gameState)
+        actions = gameState.getLegalPacmanActions()
+        successorGameStates = [gameState.generatePacmanSuccessor(action) for action in actions]
+        ghostNum = gameState.getNumAgents() - 1
+        scores = [self.actGhost(state, ghostNum, depth + 1) for state in successorGameStates]
+        return max(scores)
+
 
 def betterEvaluationFunction(currentGameState):
     """
