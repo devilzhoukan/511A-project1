@@ -97,9 +97,6 @@ class ReflexAgent(Agent):
         for capsule in curCapsuleList:
             score += pelletScore * math.exp(-1.0 * discount * manhattanDistance(newPos, capsule))
 
-
-
-
         ghostPosList = []
         for state, lastTime in zip(newGhostStates, newScaredTimes):
             ghostPosList.append(state.getPosition())
@@ -109,8 +106,6 @@ class ReflexAgent(Agent):
             if lastTime < safeTime:
                 score += ghostScore * math.exp(-1.0 * discount * manhattanDistance(newPos, ghostPos))
                 score += (manhattanDistance(newPos, ghostPos) < 2) * ghostScore
-
-
 
         if action == Directions.STOP:
             score += stopPenalty
@@ -201,6 +196,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
     def actGhost(self, gameState, ghostNum, depth):
         # Act a ghost
+        # Min value
         if gameState.isWin() or gameState.isLose():
             return self.evaluationFunction(gameState)
         actions = gameState.getLegalActions(ghostNum)
@@ -218,6 +214,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         return min(scores)
 
     def actPacman(self, gameState, depth):
+        # Max value
         if gameState.isWin() or gameState.isLose():
             return self.evaluationFunction(gameState)
         actions = gameState.getLegalPacmanActions()
@@ -238,7 +235,61 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if self.depth == 0 or gameState.isWin() or gameState.isLose():
+            return Directions.STOP
+        actions = gameState.getLegalPacmanActions()
+        ghostNum = gameState.getNumAgents() - 1
+        AlphaScore = float('-inf')
+        rAction = Directions.STOP
+        for action in actions:
+            successorGameState = gameState.generatePacmanSuccessor(action)
+            if successorGameState.isWin():
+                return action
+            score = self.actGhost(successorGameState, AlphaScore, float('inf'), ghostNum, 1)
+            if score > AlphaScore:
+                AlphaScore = score
+                rAction = action
+        return rAction
+
+    def actGhost(self, gameState, alpha, beta, ghostNum, depth):
+        # Act a ghost
+        # Min value
+        if gameState.isWin() or gameState.isLose():
+            return self.evaluationFunction(gameState)
+        actions = gameState.getLegalActions(ghostNum)
+        if not actions:
+            return self.evaluationFunction(gameState)
+        result = float('inf')
+        for action in actions:
+            successorGameState = gameState.generateSuccessor(ghostNum, action)
+            if ghostNum == 0:
+                if depth == self.depth:
+                    score = self.evaluationFunction(successorGameState)
+                else:
+                    score = self.actPacman(successorGameState, alpha, beta, depth)
+            else:
+                score = self.actGhost(successorGameState, alpha, beta, ghostNum - 1, depth)
+            result = min(result, score)
+            if result < alpha:
+                return result
+            beta = min(beta, result)
+        return result
+
+    def actPacman(self, gameState, alpha, beta, depth):
+        # Max value
+        if gameState.isWin() or gameState.isLose():
+            return self.evaluationFunction(gameState)
+        actions = gameState.getLegalPacmanActions()
+        ghostNum = gameState.getNumAgents() - 1
+        result = float('-inf')
+        for action in actions:
+            successorGameState = gameState.generatePacmanSuccessor(action)
+            score = self.actGhost(successorGameState, alpha, beta, ghostNum, depth + 1)
+            result = max(result, score)
+            if result > beta:
+                return result
+            alpha = max(result, alpha)
+        return result
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
