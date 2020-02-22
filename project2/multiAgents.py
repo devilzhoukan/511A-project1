@@ -262,7 +262,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         result = float('inf')
         for action in actions:
             successorGameState = gameState.generateSuccessor(ghostNum, action)
-            if ghostNum == 0:
+            if ghostNum - 1 == 0:
                 if depth == self.depth:
                     score = self.evaluationFunction(successorGameState)
                 else:
@@ -270,7 +270,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             else:
                 score = self.actGhost(successorGameState, alpha, beta, ghostNum - 1, depth)
             result = min(result, score)
-            if result < alpha:
+            if result <= alpha:
                 return result
             beta = min(beta, result)
         return result
@@ -286,7 +286,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             successorGameState = gameState.generatePacmanSuccessor(action)
             score = self.actGhost(successorGameState, alpha, beta, ghostNum, depth + 1)
             result = max(result, score)
-            if result > beta:
+            if result >= beta:
                 return result
             alpha = max(result, alpha)
         return result
