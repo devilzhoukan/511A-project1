@@ -358,7 +358,7 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    foodScore, pelletScore, ghostScore = 100.0, 160.0, -500.0
+    foodScore, pelletScore, ghostScore = 100.0, 160.0, -600.0
     discount = 0.2
     score = 0.0
     killScore = 1000
@@ -401,19 +401,24 @@ def betterEvaluationFunction(currentGameState):
 better = betterEvaluationFunction
 
 
-class ContestAgent(MultiAgentSearchAgent):
+class ContestAgent(ExpectimaxAgent):
     """
       Your agent for the mini-contest
     """
 
-    def getAction(self, gameState):
-        """
-          Returns an action.  You can use any method you want and search to any depth you want.
-          Just remember that the mini-contest is timed, so you have to trade off speed and computation.
+    def __init__(self, evalFn='betterEvaluationFunction', depth='3'):
+        self.index = 0  # Pacman
+        self.evaluationFunction = util.lookup(evalFn, globals())
+        self.depth = int(depth)
 
-          Ghosts don't behave randomly anymore, but they aren't perfect either -- they'll usually
-          just make a beeline straight towards Pacman (or away from him if they're scared!)
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+    # def getAction(self, gameState):
+    #     """
+    #       Returns an action.  You can use any method you want and search to any depth you want.
+    #       Just remember that the mini-contest is timed, so you have to trade off speed and computation.
+    #
+    #       Ghosts don't behave randomly anymore, but they aren't perfect either -- they'll usually
+    #       just make a beeline straight towards Pacman (or away from him if they're scared!)
+    #     """
+    #     "*** YOUR CODE HERE ***"
+    #     util.raiseNotDefined()
 
