@@ -19,38 +19,43 @@ def question2():
   return answerDiscount, answerNoise
 
 def question3a():
-  answerDiscount = None
-  answerNoise = None
-  answerLivingReward = None
+  answerDiscount = 0.2
+  answerNoise = 0.0
+  answerLivingReward = 0.0
   return answerDiscount, answerNoise, answerLivingReward
+  # python gridworld.py -a value -i 100 -g DiscountGrid --discount 0.2 --noise 0.0 --livingReward 0.0
   # If not possible, return 'NOT POSSIBLE'
 
 def question3b():
-  answerDiscount = None
-  answerNoise = None
-  answerLivingReward = None
+  answerDiscount = 0.2
+  answerNoise = 0.2
+  answerLivingReward = 0.0
   return answerDiscount, answerNoise, answerLivingReward
+  # python gridworld.py -a value -i 100 -g DiscountGrid --discount 0.2 --noise 0.2 --livingReward 0.0
   # If not possible, return 'NOT POSSIBLE'
 
 def question3c():
-  answerDiscount = None
-  answerNoise = None
-  answerLivingReward = None
+  answerDiscount = 0.8
+  answerNoise = 0.0
+  answerLivingReward = 0.0
   return answerDiscount, answerNoise, answerLivingReward
+  # python gridworld.py -a value -i 100 -g DiscountGrid --discount 0.8 --noise 0.0 --livingReward 0.0
   # If not possible, return 'NOT POSSIBLE'
 
 def question3d():
-  answerDiscount = None
-  answerNoise = None
-  answerLivingReward = None
+  answerDiscount = 0.8
+  answerNoise = 0.3
+  answerLivingReward = 0.0
   return answerDiscount, answerNoise, answerLivingReward
+  # python gridworld.py -a value -i 100 -g DiscountGrid --discount 0.8 --noise 0.3 --livingReward 0.0
   # If not possible, return 'NOT POSSIBLE'
 
 def question3e():
-  answerDiscount = None
-  answerNoise = None
-  answerLivingReward = None
+  answerDiscount = 0.8
+  answerNoise = 0.2
+  answerLivingReward = 10.0
   return answerDiscount, answerNoise, answerLivingReward
+  # python gridworld.py -a value -i 100 -g DiscountGrid --discount 0.8 --noise 0.2 --livingReward 10.0
   # If not possible, return 'NOT POSSIBLE'
 
 def question6():
