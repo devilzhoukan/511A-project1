@@ -452,24 +452,27 @@ class JointParticleFilter:
         allPossible = util.Counter()
 
         for particle in self.particles:
-            accrueProb = 1.0
+            prob = 1.0
             for ghost in range(self.numGhosts):
                 # handle a ghost in jail by updating the particle
-                if noisyDistances[ghost] == None:
+                if noisyDistances[ghost] is None:
                     particle = self.getParticleWithGhostInJail(particle, ghost)
                 else:
                     trueDistance = util.manhattanDistance(particle[ghost], pacmanPosition)
-                    accrueProb *= emissionModels[ghost][trueDistance]
-            allPossible[particle] += accrueProb
+                    prob *= emissionModels[ghost][trueDistance]
+            allPossible[particle] += prob
 
         # handle all particles getting a weight of zero by starting again
         if allPossible.totalCount() == 0:
             self.initializeParticles()
             # add back the information for ghosts in jail
             for ghost in range(self.numGhosts):
-                if noisyDistances[ghost] == None:
+                if noisyDistances[ghost] is None:
+                    newParticles = []
                     for particle in self.particles:
                         particle = self.getParticleWithGhostInJail(particle, ghost)
+                        newParticles.append(particle)
+                    self.particles = newParticles
         else:
             # rebuild the particle list for next time!
             self.particles = []
