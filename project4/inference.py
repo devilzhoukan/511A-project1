@@ -267,7 +267,7 @@ class ParticleFilter(InferenceModule):
             oldBelief = self.getBeliefDistribution()
             for particle in self.particles:
                 manDistance = util.manhattanDistance(particle, pacmanPosition)
-                allPossible[particle] += emissionModel[manDistance] * oldBelief[particle]
+                allPossible[particle] += emissionModel[manDistance] # * oldBelief[particle]
             if allPossible.totalCount() == 0:
                 self.initializeUniformly(gameState)
             else:
