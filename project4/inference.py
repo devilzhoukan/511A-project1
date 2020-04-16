@@ -213,7 +213,7 @@ class ParticleFilter(InferenceModule):
     """
 
     def __init__(self, ghostAgent, numParticles=300):
-        InferenceModule.__init__(self, ghostAgent);
+        InferenceModule.__init__(self, ghostAgent)
         self.setNumParticles(numParticles)
         self.particles = []
 
@@ -225,8 +225,11 @@ class ParticleFilter(InferenceModule):
         "*** YOUR CODE HERE ***"
         numPositions = len(self.legalPositions)
         particlesPerPos = self.numParticles / numPositions
+        remainder = self.numParticles % numPositions
         for pos in self.legalPositions:
             self.particles.extend([pos] * particlesPerPos)
+        for i in range(remainder):
+            self.particles.append(self.legalPositions[i])
 
     def observe(self, observation, gameState):
         """
@@ -261,9 +264,10 @@ class ParticleFilter(InferenceModule):
             self.particles = newParticles
         else:
             allPossible = util.Counter()
+            oldBelief = self.getBeliefDistribution()
             for particle in self.particles:
                 manDistance = util.manhattanDistance(particle, pacmanPosition)
-                allPossible[particle] += emissionModel[manDistance]
+                allPossible[particle] += emissionModel[manDistance] * oldBelief[particle]
             if allPossible.totalCount() == 0:
                 self.initializeUniformly(gameState)
             else:
@@ -454,7 +458,7 @@ class JointParticleFilter:
         for particle in self.particles:
             prob = 1.0
             for ghost in range(self.numGhosts):
-                # handle a ghost in jail by updating the particle
+
                 if noisyDistances[ghost] is None:
                     particle = self.getParticleWithGhostInJail(particle, ghost)
                 else:
@@ -462,10 +466,8 @@ class JointParticleFilter:
                     prob *= emissionModels[ghost][trueDistance]
             allPossible[particle] += prob
 
-        # handle all particles getting a weight of zero by starting again
         if allPossible.totalCount() == 0:
             self.initializeParticles()
-            # add back the information for ghosts in jail
             for ghost in range(self.numGhosts):
                 if noisyDistances[ghost] is None:
                     newParticles = []
@@ -474,10 +476,9 @@ class JointParticleFilter:
                         newParticles.append(particle)
                     self.particles = newParticles
         else:
-            # rebuild the particle list for next time!
             self.particles = []
             allPossible.normalize()
-            for index in range(self.numParticles):
+            for _ in range(self.numParticles):
                 self.particles.append(util.sample(allPossible))
 
     def getParticleWithGhostInJail(self, particle, ghostIndex):
