@@ -258,16 +258,13 @@ class ParticleFilter(InferenceModule):
         "*** YOUR CODE HERE ***"
         if noisyDistance is None:
             # has been captured
-            newParticles = []
-            for _ in range(self.numParticles):
-                newParticles.append(self.getJailPosition())
-            self.particles = newParticles
+            self.particles = [self.getJailPosition()] * self.numParticles
         else:
             allPossible = util.Counter()
-            oldBelief = self.getBeliefDistribution()
+            # oldBelief = self.getBeliefDistribution()
             for particle in self.particles:
                 manDistance = util.manhattanDistance(particle, pacmanPosition)
-                allPossible[particle] += emissionModel[manDistance] # * oldBelief[particle]
+                allPossible[particle] += emissionModel[manDistance]  # * oldBelief[particle]
             if allPossible.totalCount() == 0:
                 self.initializeUniformly(gameState)
             else:
